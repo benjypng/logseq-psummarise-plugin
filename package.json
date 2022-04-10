@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "logseq-psummarise-plugin",
   "version": "1.0",
   "description": "",
   "main": "dist/index.html",
@@ -7,7 +7,6 @@
     "main": false
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "parcel build --no-source-maps src/index.html --public-url ./"
   },
   "keywords": [],
@@ -17,9 +16,9 @@
     "@logseq/libs": "latest"
   },
   "logseq": {
-    "id": "test",
-    "title": "test",
-    "icon": ""
+    "id": "logseq-psummarise-plugin",
+    "title": "logseq-psummarise-plugin",
+    "icon": "./icon.svg"
   },
   "devDependencies": {
     "parcel": "latest"

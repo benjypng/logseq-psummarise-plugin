@@ -1,7 +1,88 @@
-import '@logseq/libs';
+import "@logseq/libs";
+import {
+  BlockEntity,
+  IBatchBlock,
+  PageEntity,
+} from "@logseq/libs/dist/LSPlugin.user";
+import { recurseFirstCut } from "./recursiveHighlights";
+import { callSettings } from "./callSettings";
+import { createSecondCutBtn } from "./createSecondCutBtn";
 
-const main = () => {
-  console.log('');
+const uniqueIdentifier = () =>
+  Math.random()
+    .toString(36)
+    .replace(/[^a-z]+/g, "");
+
+const main = async () => {
+  console.log("logseq-psummarise-plugin loaded");
+
+  callSettings();
+
+  logseq.provideModel({
+    async extract() {
+      ///////////////////
+      //// FIRST CUT ////
+      ///////////////////
+      // Get matches
+      const pageBT: BlockEntity[] =
+        await logseq.Editor.getCurrentPageBlocksTree();
+      const firstCutArr: { highlights: string[]; id: string }[] = [];
+
+      recurseFirstCut(pageBT, firstCutArr);
+
+      // Create heading block
+      const currPage = await logseq.Editor.getCurrentPage();
+      const layerOneBlock: BlockEntity = await logseq.Editor.insertBlock(
+        currPage.name,
+        `${
+          logseq.settings.layer1
+        } {{renderer :secondCut_${uniqueIdentifier()}}}`,
+        { before: false, sibling: true, isPageBlock: true }
+      );
+
+      // Create batch block
+      const highlightsBatchBlks: Array<IBatchBlock> = [];
+      for (let h of firstCutArr) {
+        if (h.highlights === null) {
+          continue;
+        } else if (h.highlights.length === 1) {
+          const payload = {
+            content: `${h.highlights[0]} [${logseq.settings.highlightsRefChar}](${h.id})`,
+          };
+          highlightsBatchBlks.push(payload);
+        } else {
+          for (let i of h.highlights) {
+            const payload = {
+              content: `${i} [${logseq.settings.highlightsRefChar}](${h.id})`,
+            };
+            highlightsBatchBlks.push(payload);
+          }
+        }
+      }
+
+      await logseq.Editor.insertBatchBlock(
+        layerOneBlock.uuid,
+        highlightsBatchBlks,
+        {
+          before: false,
+          sibling: false,
+        }
+      );
+
+      // Create extract highlights button and implement hack to render it
+      createSecondCutBtn(layerOneBlock, currPage as PageEntity);
+      await logseq.Editor.editBlock(layerOneBlock.uuid, { pos: 1 });
+      await logseq.Editor.exitEditingMode();
+
+      // Open summary block in right sidebar
+      logseq.Editor.openInRightSidebar(layerOneBlock.uuid);
+    },
+  });
+
+  logseq.App.registerUIItem("toolbar", {
+    key: "logseq-mergepages-plugin",
+    template: `<a data-on-click="extract" class="button"><i class="ti ti-underline"></i></a>`,
+  });
 };
 
 logseq.ready(main).catch(console.error);
