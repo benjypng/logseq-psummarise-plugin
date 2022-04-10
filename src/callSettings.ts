@@ -21,7 +21,7 @@ export const callSettings = () => {
     {
       key: "highlightsRefChar",
       type: "string",
-      default: "link",
+      default: "*",
       description:
         "Specifies the text or special character you want to use to click to go to the source block.",
       title: "Customise highlights link",
