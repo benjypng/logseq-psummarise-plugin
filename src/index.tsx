@@ -31,13 +31,12 @@ const main = async () => {
       recurseFirstCut(pageBT, firstCutArr);
 
       // Create heading block
-      const currPage = await logseq.Editor.getCurrentPage();
       const layerOneBlock: BlockEntity = await logseq.Editor.insertBlock(
-        currPage.name,
+        pageBT[0].uuid,
         `${
           logseq.settings.layer1
         } {{renderer :secondCut_${uniqueIdentifier()}}}`,
-        { before: false, sibling: true, isPageBlock: true }
+        { before: true, sibling: true }
       );
 
       // Create batch block
@@ -70,7 +69,7 @@ const main = async () => {
       );
 
       // Create extract highlights button and implement hack to render it
-      createSecondCutBtn(layerOneBlock, currPage as PageEntity);
+      createSecondCutBtn(layerOneBlock);
       await logseq.Editor.editBlock(layerOneBlock.uuid, { pos: 1 });
       await logseq.Editor.exitEditingMode();
 

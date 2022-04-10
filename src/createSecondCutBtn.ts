@@ -6,10 +6,7 @@ import {
 } from "@logseq/libs/dist/LSPlugin.user";
 import { recurseSecondCut } from "./recursiveHighlights";
 
-export const createSecondCutBtn = (
-  headerBlk: BlockEntity,
-  currPage: PageEntity
-) => {
+export const createSecondCutBtn = (headerBlk: BlockEntity) => {
   logseq.App.onMacroRendererSlotted(async ({ slot, payload }) => {
     const [type] = payload.arguments;
     const id = type.split("_")[1]?.trim();
@@ -22,6 +19,8 @@ export const createSecondCutBtn = (
         ///////////////////
         //// SECOND CUT ////
         ///////////////////
+        const pageBT: BlockEntity[] =
+          await logseq.Editor.getCurrentPageBlocksTree();
         const blockBT: BlockEntity = await logseq.Editor.getBlock(
           headerBlk.uuid,
           { includeChildren: true }
@@ -32,9 +31,9 @@ export const createSecondCutBtn = (
         recurseSecondCut(blockBTChildren, secondCutArr);
 
         const layerTwoBlock: BlockEntity = await logseq.Editor.insertBlock(
-          currPage.name,
+          pageBT[0].uuid,
           `${logseq.settings.layer2}`,
-          { before: false, sibling: true, isPageBlock: true }
+          { before: true, sibling: true }
         );
         // Create batch block
         const highlightsBatchBlks: Array<IBatchBlock> = [];
