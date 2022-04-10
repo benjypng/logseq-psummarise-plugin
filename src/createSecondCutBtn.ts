@@ -33,7 +33,10 @@ export const createSecondCutBtn = (headerBlk: BlockEntity) => {
         const layerTwoBlock: BlockEntity = await logseq.Editor.insertBlock(
           pageBT[0].uuid,
           `${logseq.settings.layer2}`,
-          { before: true, sibling: true }
+          {
+            before: pageBT[0].content.includes(":: ") ? false : true,
+            sibling: true,
+          }
         );
         // Create batch block
         const highlightsBatchBlks: Array<IBatchBlock> = [];

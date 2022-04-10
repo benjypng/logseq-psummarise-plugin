@@ -29,14 +29,17 @@ const main = async () => {
       const firstCutArr: { highlights: string[]; id: string }[] = [];
 
       recurseFirstCut(pageBT, firstCutArr);
-
+      console.log(pageBT[0].content.includes(":: "));
       // Create heading block
       const layerOneBlock: BlockEntity = await logseq.Editor.insertBlock(
         pageBT[0].uuid,
         `${
           logseq.settings.layer1
         } {{renderer :secondCut_${uniqueIdentifier()}}}`,
-        { before: true, sibling: true }
+        {
+          before: pageBT[0].content.includes(":: ") ? false : true,
+          sibling: true,
+        }
       );
 
       // Create batch block

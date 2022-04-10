@@ -2,6 +2,8 @@
 
 # Introduction
 
+![](/screenshots/demo.gif)
+
 This plugin tries to emulate the Progressive Summarisation approacy by Tiago Forte's [Building a Second Brain](https://www.buildingasecondbrain.com/) course.
 
 ![](/screenshots/ps-pyramid.png)
