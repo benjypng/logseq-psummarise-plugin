@@ -29,7 +29,7 @@ const main = async () => {
       const firstCutArr: { highlights: string[]; id: string }[] = [];
 
       recurseFirstCut(pageBT, firstCutArr);
-      console.log(pageBT[0].content.includes(":: "));
+
       // Create heading block
       const layerOneBlock: BlockEntity = await logseq.Editor.insertBlock(
         pageBT[0].uuid,
@@ -37,7 +37,7 @@ const main = async () => {
           logseq.settings.layer1
         } {{renderer :secondCut_${uniqueIdentifier()}}}`,
         {
-          before: pageBT[0].content.includes(":: ") ? false : true,
+          before: (pageBT[0].content.includes(':: ') && !pageBT[0].content.includes('id:: ')) ? false : true,
           sibling: true,
         }
       );

@@ -12,7 +12,7 @@ const findHighlights = (content: string) => {
 // first cut is bold
 // second cut is highlights
 
-export const recurseFirstCut = (
+export const recurseFirstCut = async (
   arr: BlockEntity[],
   highlightsArr: { highlights: string[]; id: string }[]
 ) => {
@@ -21,7 +21,12 @@ export const recurseFirstCut = (
       highlights: findBold(b.content),
       id: b.uuid,
     };
-    if (payload.highlights !== null) highlightsArr.push(payload);
+    if (payload.highlights !== null) {
+      highlightsArr.push(payload);
+      if (!b.properties.id) {
+        await logseq.Editor.upsertBlockProperty(b.uuid, "id", b.uuid);
+      }
+    }
     if (b.children.length > 0) {
       recurseFirstCut(b.children as BlockEntity[], highlightsArr);
     } else {
@@ -30,7 +35,7 @@ export const recurseFirstCut = (
   }
 };
 
-export const recurseSecondCut = (
+export const recurseSecondCut = async (
   arr: BlockEntity[],
   highlightsArr: { highlights: string[]; id: string }[]
 ) => {
@@ -39,7 +44,12 @@ export const recurseSecondCut = (
       highlights: findHighlights(b.content),
       id: b.uuid,
     };
-    if (payload.highlights !== null) highlightsArr.push(payload);
+    if (payload.highlights !== null) {
+      highlightsArr.push(payload);
+      if (!b.properties.id) {
+        await logseq.Editor.upsertBlockProperty(b.uuid, "id", b.uuid);
+      }
+    }
     if (b.children.length > 0) {
       recurseSecondCut(b.children as BlockEntity[], highlightsArr);
     } else {
