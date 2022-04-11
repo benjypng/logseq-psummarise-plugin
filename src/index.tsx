@@ -1,9 +1,5 @@
 import "@logseq/libs";
-import {
-  BlockEntity,
-  IBatchBlock,
-  PageEntity,
-} from "@logseq/libs/dist/LSPlugin.user";
+import { BlockEntity, IBatchBlock } from "@logseq/libs/dist/LSPlugin.user";
 import { recurseFirstCut } from "./recursiveHighlights";
 import { callSettings } from "./callSettings";
 import { createSecondCutBtn } from "./createSecondCutBtn";
@@ -37,7 +33,11 @@ const main = async () => {
           logseq.settings.layer1
         } {{renderer :secondCut_${uniqueIdentifier()}}}`,
         {
-          before: (pageBT[0].content.includes(':: ') && !pageBT[0].content.includes('id:: ')) ? false : true,
+          before:
+            pageBT[0].content.includes(":: ") &&
+            !pageBT[0].content.includes("id:: ")
+              ? false
+              : true,
           sibling: true,
         }
       );
