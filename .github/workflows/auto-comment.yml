@@ -1,0 +1,14 @@
+name: Auto Comment
+on: [issues]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wow-actions/auto-comment@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          issuesOpened: |
+            👋 @{{ author }}
+            Thanks for raising an issue! This is a side project and will need a bit of time to investigate the matter. Do remember to provide as much background to the issue as possible.
+
+            Screenshots or video captures are preferred as well!
