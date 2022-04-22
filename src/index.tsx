@@ -82,7 +82,7 @@ const main = async () => {
   });
 
   logseq.App.registerUIItem("toolbar", {
-    key: "logseq-mergepages-plugin",
+    key: "logseq-psummarise-plugin",
     template: `<a data-on-click="extract" class="button"><i class="ti ti-underline"></i></a>`,
   });
 };
