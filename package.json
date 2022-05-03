@@ -13,7 +13,7 @@
   "author": "hkgnp",
   "license": "MIT",
   "dependencies": {
-    "@logseq/libs": "latest"
+    "@logseq/libs": "^0.0.6"
   },
   "logseq": {
     "id": "logseq-psummarise-plugin",
@@ -21,6 +21,6 @@
     "icon": "./icon.svg"
   },
   "devDependencies": {
-    "parcel": "latest"
+    "parcel": "^2.5.0"
   }
 }
