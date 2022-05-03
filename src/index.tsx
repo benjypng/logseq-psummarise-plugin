@@ -11,7 +11,6 @@ const main = async () => {
   // SUMMARISE BLOCK
   logseq.Editor.registerBlockContextMenuItem("Psummarise block", async (e) => {
     const arrBlk: BlockEntity[] = [];
-    console.log(e);
     const blk = await logseq.Editor.getBlock(e.uuid);
     arrBlk.push(blk);
     goSummarise(arrBlk);
@@ -22,11 +21,13 @@ const main = async () => {
     async extract() {
       const pageBT: BlockEntity[] =
         await logseq.Editor.getCurrentPageBlocksTree();
-      if (!pageBT)
+      if (!pageBT) {
         logseq.App.showMsg(
           "This function is not available in the rolling journal page. It can only be used on a single journal or regular page",
           "error"
         );
+        return;
+      }
       goSummarise(pageBT);
     },
   });

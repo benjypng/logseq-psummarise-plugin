@@ -16,6 +16,14 @@ export const goSummarise = async (arrOfBlocks: BlockEntity[]) => {
 
   recurseFirstCut(arrOfBlocks, firstCutArr);
 
+  if (firstCutArr.length === 0) {
+    logseq.App.showMsg(
+      "No highlights found. Please ensure that you have highlighted something, or that the plugin settings is as per your workflow.",
+      "error"
+    );
+    return;
+  }
+
   // Create heading block
   const layerOneBlock: BlockEntity = await logseq.Editor.insertBlock(
     arrOfBlocks[0].uuid,

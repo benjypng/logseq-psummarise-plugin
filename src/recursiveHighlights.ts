@@ -18,7 +18,10 @@ export const recurseFirstCut = async (
 ) => {
   for (let b of arr) {
     const payload = {
-      highlights: findBold(b.content),
+      highlights:
+        logseq.settings.layer1Highlights === "**Bold**"
+          ? findBold(b.content)
+          : findHighlights(b.content),
       id: b.uuid,
     };
     if (payload.highlights !== null) {
@@ -41,7 +44,10 @@ export const recurseSecondCut = async (
 ) => {
   for (let b of arr) {
     const payload = {
-      highlights: findHighlights(b.content),
+      highlights:
+        logseq.settings.layer2Highlights === "**Bold**"
+          ? findBold(b.content)
+          : findHighlights(b.content),
       id: b.uuid,
     };
     if (payload.highlights !== null) {

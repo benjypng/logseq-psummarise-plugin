@@ -1,9 +1,5 @@
 import "@logseq/libs";
-import {
-  BlockEntity,
-  IBatchBlock,
-  PageEntity,
-} from "@logseq/libs/dist/LSPlugin.user";
+import { BlockEntity, IBatchBlock } from "@logseq/libs/dist/LSPlugin.user";
 import { recurseSecondCut } from "./recursiveHighlights";
 
 export const createSecondCutBtn = (headerBlk: BlockEntity) => {
@@ -30,6 +26,14 @@ export const createSecondCutBtn = (headerBlk: BlockEntity) => {
         const secondCutArr: { highlights: string[]; id: string }[] = [];
         recurseSecondCut(blockBTChildren, secondCutArr);
 
+        if (secondCutArr.length === 0) {
+          logseq.App.showMsg(
+            "No highlights found. Please ensure that you have highlighted something, or that the plugin settings is as per your workflow.",
+            "error"
+          );
+          return;
+        }
+
         const layerTwoBlock: BlockEntity = await logseq.Editor.insertBlock(
           pageBT[0].uuid,
           `${logseq.settings.layer2}`,
@@ -38,6 +42,7 @@ export const createSecondCutBtn = (headerBlk: BlockEntity) => {
             sibling: true,
           }
         );
+
         // Create batch block
         const highlightsBatchBlks: Array<IBatchBlock> = [];
         for (let h of secondCutArr) {
