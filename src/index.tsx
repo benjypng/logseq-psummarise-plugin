@@ -16,6 +16,19 @@ const main = async () => {
     goSummarise(arrBlk);
   });
 
+  // SUMMARISE BLOCK AND CHILD BLOCKS
+  logseq.Editor.registerBlockContextMenuItem(
+    "Psummarise block and children",
+    async (e) => {
+      const arrBlk: BlockEntity[] = [];
+      const blk = await logseq.Editor.getBlock(e.uuid, {
+        includeChildren: true,
+      });
+      arrBlk.push(blk);
+      goSummarise(arrBlk);
+    }
+  );
+
   // SUMMARISE PAGE
   logseq.provideModel({
     async extract() {
