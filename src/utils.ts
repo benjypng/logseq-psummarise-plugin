@@ -1,6 +1,7 @@
 import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin.user'
-import { recurseFirstCut } from './recursiveHighlights'
+
 import { createSecondCutBtn } from './createSecondCutBtn'
+import { recurseFirstCut } from './recursiveHighlights'
 
 const uniqueIdentifier = () =>
   Math.random()
@@ -40,8 +41,8 @@ export const goSummarise = async (arrOfBlocks: BlockEntity[]) => {
   )
 
   // Create batch block
-  const highlightsBatchBlks: Array<IBatchBlock> = []
-  for (let h of firstCutArr) {
+  const highlightsBatchBlks: IBatchBlock[] = []
+  for (const h of firstCutArr) {
     if (h.highlights === null) {
       continue
     } else if (h.highlights.length === 1) {
@@ -50,7 +51,7 @@ export const goSummarise = async (arrOfBlocks: BlockEntity[]) => {
       }
       highlightsBatchBlks.push(payload)
     } else {
-      for (let i of h.highlights) {
+      for (const i of h.highlights) {
         const payload = {
           content: `${i} [${logseq.settings!.highlightsRefChar}](${h.id})`,
         }

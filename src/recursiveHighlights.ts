@@ -1,4 +1,5 @@
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user'
+
 import {
   rxMdBoldRef,
   rxMdHighlightRef,
@@ -28,7 +29,7 @@ export const recurseFirstCut = async (
 ) => {
   const { preferredFormat } = await logseq.App.getUserConfigs()
 
-  for (let b of arr) {
+  for (const b of arr) {
     const payload = {
       highlights:
         logseq.settings!.layer1Highlights === '**Bold**'
@@ -56,7 +57,7 @@ export const recurseSecondCut = async (
 ) => {
   const { preferredFormat } = await logseq.App.getUserConfigs()
 
-  for (let b of arr) {
+  for (const b of arr) {
     const payload = {
       highlights:
         logseq.settings!.layer2Highlights === '**Bold**'

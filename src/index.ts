@@ -1,6 +1,8 @@
 import '@logseq/libs'
-import { settings } from './settings'
+
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin'
+
+import { settings } from './settings'
 import { goSummarise } from './utils'
 
 const main = async () => {

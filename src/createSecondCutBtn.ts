@@ -1,64 +1,70 @@
-import "@logseq/libs";
-import { BlockEntity, IBatchBlock } from "@logseq/libs/dist/LSPlugin.user";
-import { recurseSecondCut } from "./recursiveHighlights";
+import '@logseq/libs'
+
+import { BlockEntity, IBatchBlock } from '@logseq/libs/dist/LSPlugin.user'
+
+import { recurseSecondCut } from './recursiveHighlights'
 
 export const createSecondCutBtn = (headerBlk: BlockEntity) => {
   logseq.App.onMacroRendererSlotted(async ({ slot, payload }) => {
-    const [type] = payload.arguments;
-    const id = type.split("_")[1]?.trim();
-    const btnId = `secondCut_${id}`;
+    const [type] = payload.arguments
+    if (!type) return
 
-    if (!type.startsWith(":secondCut_")) return;
+    const id = type.split('_')[1]?.trim()
+    const btnId = `secondCut_${id}`
+
+    if (!type.startsWith(':secondCut_')) return
 
     logseq.provideModel({
       async secondCut() {
         ///////////////////
         //// SECOND CUT ////
         ///////////////////
-        const pageBT: BlockEntity[] =
-          await logseq.Editor.getCurrentPageBlocksTree();
-        const blockBT: BlockEntity = await logseq.Editor.getBlock(
-          headerBlk.uuid,
-          { includeChildren: true }
-        );
-        const blockBTChildren: BlockEntity[] =
-          blockBT.children as BlockEntity[];
-        const secondCutArr: { highlights: string[]; id: string }[] = [];
-        recurseSecondCut(blockBTChildren, secondCutArr);
+        const pageBT = await logseq.Editor.getCurrentPageBlocksTree()
+        if (!pageBT || !pageBT[0]) return
+
+        const blockBT = await logseq.Editor.getBlock(headerBlk.uuid, {
+          includeChildren: true,
+        })
+        if (!blockBT) return
+
+        const blockBTChildren: BlockEntity[] = blockBT.children as BlockEntity[]
+        const secondCutArr: { highlights: string[]; id: string }[] = []
+        recurseSecondCut(blockBTChildren, secondCutArr)
 
         if (secondCutArr.length === 0) {
-          logseq.App.showMsg(
-            "No highlights found. Please ensure that you have highlighted something, or that the plugin settings is as per your workflow.",
-            "error"
-          );
-          return;
+          logseq.UI.showMsg(
+            'No highlights found. Please ensure that you have highlighted something, or that the plugin settings is as per your workflow.',
+            'error',
+          )
+          return
         }
 
-        const layerTwoBlock: BlockEntity = await logseq.Editor.insertBlock(
+        const layerTwoBlock = await logseq.Editor.insertBlock(
           pageBT[0].uuid,
-          `${logseq.settings.layer2}`,
+          `${logseq.settings!.layer2}`,
           {
-            before: pageBT[0].content.includes(":: ") ? false : true,
+            before: pageBT[0].content.includes(':: ') ? false : true,
             sibling: true,
-          }
-        );
+          },
+        )
+        if (!layerTwoBlock) return
 
         // Create batch block
-        const highlightsBatchBlks: Array<IBatchBlock> = [];
-        for (let h of secondCutArr) {
+        const highlightsBatchBlks: IBatchBlock[] = []
+        for (const h of secondCutArr) {
           if (h.highlights === null) {
-            continue;
+            continue
           } else if (h.highlights.length === 1) {
             const payload = {
-              content: `${h.highlights[0]} [${logseq.settings.highlightsRefChar}](${h.id})`,
-            };
-            highlightsBatchBlks.push(payload);
+              content: `${h.highlights[0]} [${logseq.settings!.highlightsRefChar}](${h.id})`,
+            }
+            highlightsBatchBlks.push(payload)
           } else {
-            for (let i of h.highlights) {
+            for (const i of h.highlights) {
               const payload = {
-                content: `${i} [${logseq.settings.highlightsRefChar}](${h.id})`,
-              };
-              highlightsBatchBlks.push(payload);
+                content: `${i} [${logseq.settings!.highlightsRefChar}](${h.id})`,
+              }
+              highlightsBatchBlks.push(payload)
             }
           }
         }
@@ -69,12 +75,12 @@ export const createSecondCutBtn = (headerBlk: BlockEntity) => {
           {
             before: false,
             sibling: false,
-          }
-        );
+          },
+        )
 
-        logseq.Editor.openInRightSidebar(layerTwoBlock.uuid);
+        logseq.Editor.openInRightSidebar(layerTwoBlock.uuid)
       },
-    });
+    })
 
     logseq.provideStyle(`
       .renderBtn {
@@ -89,13 +95,13 @@ export const createSecondCutBtn = (headerBlk: BlockEntity) => {
         background-color: black;
         color: white;
       }
-    `);
+    `)
 
     logseq.provideUI({
       key: `${btnId}`,
       slot,
       reset: true,
       template: `<button data-on-click="secondCut" class="renderBtn">Extract Highlights</button>`,
-    });
-  });
-};
+    })
+  })
+}
