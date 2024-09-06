@@ -1,26 +1,56 @@
 {
   "name": "logseq-psummarise-plugin",
-  "version": "1.1.0",
-  "description": "",
-  "main": "dist/index.html",
-  "targets": {
-    "main": false
-  },
-  "scripts": {
-    "build": "parcel build --no-source-maps src/index.html --public-url ./"
-  },
-  "keywords": [],
-  "author": "hkgnp",
+  "author": "benjypng",
+  "description": "Progressive summarisation according to Tiago Forte.",
   "license": "MIT",
-  "dependencies": {
-    "@logseq/libs": "^0.0.6"
-  },
   "logseq": {
     "id": "logseq-psummarise-plugin",
     "title": "logseq-psummarise-plugin",
-    "icon": "./icon.svg"
+    "icon": "./icon.svg",
+    "main": "dist/index.html"
+  },
+  "scripts": {
+    "dev": "npx vite",
+    "build": "npx eslint . --fix && npx tsc && npx vite build",
+    "preview": "npx vite preview",
+    "prepare": "husky"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            "logseq-psummarise-plugin.zip"
+          ]
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "@logseq/libs": "^0.0.17"
   },
   "devDependencies": {
-    "parcel": "^2.5.0"
+    "@eslint/js": "^9.9.0",
+    "@types/eslint": "^9.6.0",
+    "@types/eslint-config-prettier": "^6.11.3",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^22.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.1.0",
+    "@typescript-eslint/parser": "^8.1.0",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "husky": "^9.1.5",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.1.0",
+    "vite": "^5.4.1",
+    "vite-plugin-logseq": "^1.1.2",
+    "vite-tsconfig-paths": "^5.0.1"
   }
 }
