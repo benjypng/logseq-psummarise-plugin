@@ -44,9 +44,7 @@ export const recurseFirstCut = async (
     }
 
     if (b.children && b.children.length > 0) {
-      recurseFirstCut(b.children as BlockEntity[], highlightsArr)
-    } else {
-      continue
+      await recurseFirstCut(b.children as BlockEntity[], highlightsArr)
     }
   }
 }

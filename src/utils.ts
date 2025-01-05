@@ -14,10 +14,11 @@ export const goSummarise = async (arrOfBlocks: BlockEntity[]) => {
   ///////////////////
   // Get matches
   const firstCutArr: { highlights: string[]; id: string }[] = []
-
-  recurseFirstCut(arrOfBlocks, firstCutArr)
-
-  if (firstCutArr.length === 0) {
+  await recurseFirstCut(arrOfBlocks, firstCutArr)
+  // Check if any highlights exist in the array
+  const hasHighlights = firstCutArr.some(item => item.highlights && item.highlights.length > 0)
+  
+  if (firstCutArr.length === 0 || !hasHighlights) {
     logseq.UI.showMsg(
       'No highlights found. Please ensure that you have highlighted something, or that the plugin settings is as per your workflow.',
       'error',
@@ -42,21 +43,20 @@ export const goSummarise = async (arrOfBlocks: BlockEntity[]) => {
 
   // Create batch block
   const highlightsBatchBlks: IBatchBlock[] = []
+  const { preferredFormat } = await logseq.App.getUserConfigs()
+
   for (const h of firstCutArr) {
-    if (h.highlights === null) {
+    if (h.highlights === null || h.highlights.length === 0) {
       continue
-    } else if (h.highlights.length === 1) {
+    }
+    
+    for (const i of h.highlights) {
       const payload = {
-        content: `${h.highlights[0]} [${logseq.settings!.highlightsRefChar}](${h.id})`,
+        content: preferredFormat === 'org'
+          ? `${i} [[${h.id}][${logseq.settings!.highlightsRefChar}]]`
+          : `${i} [${logseq.settings!.highlightsRefChar}](${h.id})`,
       }
       highlightsBatchBlks.push(payload)
-    } else {
-      for (const i of h.highlights) {
-        const payload = {
-          content: `${i} [${logseq.settings!.highlightsRefChar}](${h.id})`,
-        }
-        highlightsBatchBlks.push(payload)
-      }
     }
   }
 

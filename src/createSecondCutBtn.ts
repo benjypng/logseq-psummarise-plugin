@@ -10,6 +10,8 @@ export const createSecondCutBtn = (headerBlk: BlockEntity) => {
     if (!type) return
 
     const id = type.split('_')[1]?.trim()
+    if (!id) return  
+
     const btnId = `secondCut_${id}`
 
     if (!type.startsWith(':secondCut_')) return
@@ -51,21 +53,20 @@ export const createSecondCutBtn = (headerBlk: BlockEntity) => {
 
         // Create batch block
         const highlightsBatchBlks: IBatchBlock[] = []
+        const { preferredFormat } = await logseq.App.getUserConfigs()
+
         for (const h of secondCutArr) {
-          if (h.highlights === null) {
+          if (h.highlights === null || h.highlights.length === 0) {
             continue
-          } else if (h.highlights.length === 1) {
+          }
+          
+          for (const i of h.highlights) {
             const payload = {
-              content: `${h.highlights[0]} [${logseq.settings!.highlightsRefChar}](${h.id})`,
+              content: preferredFormat === 'org'
+                ? `${i} [[${h.id}][${logseq.settings!.highlightsRefChar}]]`
+                : `${i} [${logseq.settings!.highlightsRefChar}](${h.id})`,
             }
             highlightsBatchBlks.push(payload)
-          } else {
-            for (const i of h.highlights) {
-              const payload = {
-                content: `${i} [${logseq.settings!.highlightsRefChar}](${h.id})`,
-              }
-              highlightsBatchBlks.push(payload)
-            }
           }
         }
 
